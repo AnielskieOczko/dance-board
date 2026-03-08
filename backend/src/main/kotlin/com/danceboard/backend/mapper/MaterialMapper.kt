@@ -1,7 +1,6 @@
 package com.danceboard.backend.mapper
 
 import com.danceboard.backend.config.DanceMaterials
-import com.danceboard.backend.config.DanceMaterials.driveViewUrl
 import com.danceboard.backend.model.DanceMaterialEntity
 import com.danceboard.shared.dto.DanceMaterialResponse
 import kotlinx.serialization.json.Json
@@ -17,6 +16,7 @@ fun ResultRow.toEntity() = DanceMaterialEntity(
     difficultyLevel = this[DanceMaterials.difficultyLevel],
     sourceUrl = this[DanceMaterials.sourceUrl],
     driveFileId = this[DanceMaterials.driveFileId],
+    driveViewUrl = this[DanceMaterials.driveViewUrl],
     author = this[DanceMaterials.author],
     createdAt = this[DanceMaterials.createdAt],
     updatedAt = this[DanceMaterials.updatedAt]
@@ -32,7 +32,7 @@ fun DanceMaterialEntity.toResponse() = DanceMaterialResponse(
     difficultyLevel = difficultyLevel,
     sourceUrl = sourceUrl,
     driveFileId = driveFileId,
-    driveViewUrl = driveViewUrl.toString(),
+    driveViewUrl = driveViewUrl,
     author = author,
     createdAt = createdAt.toString(),                 // Instant → ISO string
     updatedAt = updatedAt.toString()

@@ -16,6 +16,7 @@ data class DanceMaterialEntity(
     val difficultyLevel: DifficultyLevel,
     val sourceUrl: String?,
     val driveFileId: String?,
+    val driveViewUrl: String?,
     val author: String,
     val createdAt: Instant,
     val updatedAt: Instant
