@@ -22,9 +22,7 @@ fun MaterialCard(
 
         Div(attrs = { classes("card-meta") }) {
             Span(attrs = { classes("badge") }) { Text(material.danceType.name) }
-            Text(" | ")
             Span(attrs = { classes("badge") }) { Text(material.danceStyle.name) }
-            Text(" | ")
             Span(attrs = { classes("badge") }) { Text(material.difficultyLevel.name) }
         }
 
@@ -36,7 +34,6 @@ fun MaterialCard(
             Div(attrs = { classes("tags")}) {
                 material.tags.forEach { tag ->
                     Span(attrs = { classes("tag") }) { Text(tag) }
-                    Text(", ")
                 }
             }
         }
