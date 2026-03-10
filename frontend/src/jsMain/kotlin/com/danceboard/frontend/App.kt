@@ -1,15 +1,90 @@
 package com.danceboard.frontend
 
-import androidx.compose.runtime.Composable
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.H1
-import org.jetbrains.compose.web.dom.P
-import org.jetbrains.compose.web.dom.Text
+import androidx.compose.runtime.*
+import com.danceboard.frontend.components.*
+import com.danceboard.frontend.state.AppState
+import com.danceboard.frontend.state.View
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.web.dom.*
 
 @Composable
 fun App() {
-    Div {
-        H1 { Text("🎭 DanceBoard") }
-        P { Text("Twoja aplikacja do zarządzania materiałami tanecznymi!") }
+    // Stan aplikacji — jeden obiekt dla całego frontendu
+    val appState = remember { AppState() }
+    val scope = rememberCoroutineScope()
+
+    // Załaduj materiały przy starcie (jak useEffect([], ...) w React)
+    LaunchedEffect(Unit) {
+        appState.loadMaterials()
+    }
+
+    Div(attrs = { classes("app") }) {
+        // ═══════════════════════════════════
+        // Nagłówek
+        // ═══════════════════════════════════
+        Header(attrs = { classes("header") }) {
+            H1 { Text("🎭 DanceBoard") }
+            Button(attrs = {
+                onClick {
+                    if (appState.currentView == View.LIST) {
+                        appState.startCreating()
+                    } else {
+                        appState.goToList()
+                    }
+                }
+            }) {
+                Text(if (appState.currentView == View.LIST) "+ Dodaj materiał" else "← Lista")
+            }
+        }
+
+        // Błąd
+        appState.error?.let { errorMsg ->
+            Div(attrs = { classes("error") }) { Text(errorMsg) }
+        }
+
+        // ═══════════════════════════════════
+        // Widok — lista lub formularz
+        // ═══════════════════════════════════
+        when (appState.currentView) {
+            View.LIST -> {
+                // Wyszukiwarka
+                SearchBar(
+                    filters = appState.searchFilters,
+                    onFiltersChanged = { newFilters ->
+                        scope.launch { appState.updateFilters(newFilters) }
+                    }
+                )
+
+                // Lista materiałów
+                MaterialList(
+                    materials = appState.materials,
+                    totalCount = appState.totalCount,
+                    currentPage = appState.currentPage,
+                    totalPages = appState.totalPages,
+                    isLoading = appState.isLoading,
+                    onEdit = { material -> appState.startEditing(material) },
+                    onDelete = { material ->
+                        scope.launch { appState.deleteMaterial(material.id) }
+                    },
+                    onPageChange = { page ->
+                        scope.launch {
+                            appState.updateFilters(appState.searchFilters.copy(page = page))
+                        }
+                    }
+                )
+            }
+            View.FORM -> {
+                MaterialForm(
+                    existingMaterial = appState.editingMaterial,
+                    onSave = { request ->
+                        scope.launch { appState.createMaterial(request) }
+                    },
+                    onUpdate = { id, request ->
+                        scope.launch { appState.updateMaterial(id, request) }
+                    },
+                    onCancel = { appState.goToList() }
+                )
+            }
+        }
     }
 }

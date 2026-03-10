@@ -3,9 +3,12 @@ import com.danceboard.backend.config.configureDatabases
 import com.danceboard.backend.repository.DanceMaterialRepository
 import com.danceboard.backend.routes.danceMaterialRoutes
 import com.danceboard.backend.service.DanceMaterialService
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.routing.routing
 import kotlinx.serialization.json.Json
 
@@ -21,6 +24,13 @@ fun Application.module() {
                 encodeDefaults = true
             }
         )
+    }
+
+    install(CORS) {
+        allowHost("localhost:8081")
+        allowHeader(HttpHeaders.ContentType)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Delete)
     }
 
     configureDatabases()

@@ -17,6 +17,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.like
 import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.lowerCase
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -97,9 +98,9 @@ class DanceMaterialRepository {
         val query = DanceMaterials.selectAll()
 
         filters.query?.let { searchText ->
-            query.andWhere { (DanceMaterials.name like "%${searchText}%") or
-            (DanceMaterials.description like "%${searchText}%") or
-            (DanceMaterials.author like "%${searchText}%")
+            query.andWhere { (DanceMaterials.name.lowerCase() like "%${searchText.lowercase()}%") or
+            (DanceMaterials.description.lowerCase() like "%${searchText.lowercase()}%") or
+            (DanceMaterials.author.lowerCase() like "%${searchText.lowercase()}%")
             }
         }
 
