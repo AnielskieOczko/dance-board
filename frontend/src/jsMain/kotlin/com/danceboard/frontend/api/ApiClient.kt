@@ -15,7 +15,8 @@ class ApiClient {
         }
     }
 
-    private val baseUrl = "http://localhost:8080/api/v1"
+    private val baseUrl = js("window.API_BASE_URL").unsafeCast<String?>()
+        ?: "http://localhost:8080/api/v1"
 
 
     suspend fun searchMaterials(filters: SearchFilters = SearchFilters()): MaterialListResponse {

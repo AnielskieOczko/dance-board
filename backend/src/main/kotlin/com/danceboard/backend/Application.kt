@@ -27,7 +27,8 @@ fun Application.module() {
     }
 
     install(CORS) {
-        allowHost("localhost:8081")
+        val frontendUrl = System.getenv("FRONTEND_URL") ?: "localhost:8081"
+        allowHost(frontendUrl, schemes = listOf("http", "https"))
         allowHeader(HttpHeaders.ContentType)
         allowMethod(HttpMethod.Put)
         allowMethod(HttpMethod.Delete)
