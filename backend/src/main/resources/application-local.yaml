@@ -10,3 +10,10 @@ datasource:
   password: "danceboard"
   driverClassName: "org.postgresql.Driver"
   maxPoolSize: 5
+
+google:
+  drive:
+    folderId: ${?GOOGLE_DRIVE_FOLDER_ID}
+    clientId: ${?GOOGLE_CLIENT_ID}
+    clientSecret: ${?GOOGLE_CLIENT_SECRET}
+    refreshToken: ${?GOOGLE_REFRESH_TOKEN}

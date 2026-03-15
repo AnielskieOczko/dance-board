@@ -10,15 +10,16 @@ val kotlinVersion: String by project
 // In multi-module: plugin versions are defined in ROOT build.gradle.kts
 // Here we apply plugins WITHOUT versions — root manages them
 plugins {
-    kotlin("jvm")                                    // Compile Kotlin → JVM bytecode
-    id("io.ktor.plugin")                             // Ktor: fat JAR, Docker, run task
-    kotlin("plugin.serialization")                   // @Serializable annotation processing
+    kotlin("jvm") // Compile Kotlin → JVM bytecode
+    id("io.ktor.plugin") // Ktor: fat JAR, Docker, run task
+    kotlin("plugin.serialization") // @Serializable annotation processing
 }
 
 // ============================================================
 // METADATA — module identity (like groupId/artifactId in Maven)
 // ============================================================
 group = "com.danceboard"
+
 version = "0.0.1"
 
 // ============================================================
@@ -33,9 +34,7 @@ application {
 // ============================================================
 // JVM TOOLCHAIN — which JDK version to use
 // ============================================================
-kotlin {
-    jvmToolchain(21)
-}
+kotlin { jvmToolchain(21) }
 
 // ============================================================
 // DEPENDENCIES — libraries (like <dependencies> in pom.xml)
@@ -47,17 +46,17 @@ dependencies {
     implementation(project(":shared"))
 
     // --- Ktor Server Core ---
-    implementation("io.ktor:ktor-server-core")              // Ktor core framework
-    implementation("io.ktor:ktor-server-netty")              // HTTP engine (like Tomcat in Spring)
-    implementation("io.ktor:ktor-server-config-yaml")        // Read application.yaml config
+    implementation("io.ktor:ktor-server-core") // Ktor core framework
+    implementation("io.ktor:ktor-server-netty") // HTTP engine (like Tomcat in Spring)
+    implementation("io.ktor:ktor-server-config-yaml") // Read application.yaml config
 
     // --- Ktor Server Plugins ---
     implementation("io.ktor:ktor-server-content-negotiation") // Auto JSON ↔ Object conversion
     implementation("io.ktor:ktor-serialization-kotlinx-json") // JSON serializer (kotlinx)
-    implementation("io.ktor:ktor-server-auth")                // Authentication (Basic Auth MVP)
-    implementation("io.ktor:ktor-server-cors")                // CORS (frontend on different port)
-    implementation("io.ktor:ktor-server-status-pages")        // Global error handling
-    implementation("io.ktor:ktor-server-call-logging")        // Request/response logging
+    implementation("io.ktor:ktor-server-auth") // Authentication (Basic Auth MVP)
+    implementation("io.ktor:ktor-server-cors") // CORS (frontend on different port)
+    implementation("io.ktor:ktor-server-status-pages") // Global error handling
+    implementation("io.ktor:ktor-server-call-logging") // Request/response logging
 
     // --- Exposed ORM ---
     // Explicit versions — Exposed is NOT managed by the Ktor BOM
@@ -73,7 +72,14 @@ dependencies {
     // --- Logging ---
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
+    // --- Google Drive API ---
+    implementation("com.google.api-client:google-api-client:2.7.2")
+    implementation("com.google.apis:google-api-services-drive:v3-rev20241027-2.0.0")
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.30.1")
+
     // --- Testing ---
     testImplementation("io.ktor:ktor-server-test-host")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
+
+
 }

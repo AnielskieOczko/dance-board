@@ -8,13 +8,31 @@ import com.danceboard.shared.dto.MaterialListResponse
 import com.danceboard.shared.dto.SearchFilters
 import com.danceboard.shared.dto.UpdateMaterialRequest
 import org.slf4j.LoggerFactory
+import java.io.InputStream
 import java.util.UUID
 
 class DanceMaterialService(
     private val danceMaterialRepository: DanceMaterialRepository,
+    private val googleDriveService: GoogleDriveService
 ) {
 
     private val logger = LoggerFactory.getLogger(DanceMaterialService::class.java)
+
+    suspend fun uploadVideo(materialId: UUID, fileName: String, inputStream: InputStream, mimeType: String): DanceMaterialResponse {
+        val driveInfo = googleDriveService.uploadVideo(fileName, inputStream, mimeType)
+        val updated = danceMaterialRepository.updateDriveInfo(materialId, driveInfo.fileId, driveInfo.viewUrl)
+            ?: throw NoSuchElementException("Material not found: $materialId")
+        return updated.toResponse()
+    }
+
+    suspend fun deleteVideo(materialId: UUID): DanceMaterialResponse {
+        val material = danceMaterialRepository.findById(materialId)
+            ?: throw NoSuchElementException("Material not found: $materialId")
+        material.driveFileId?.let { driveFileId -> googleDriveService.deleteVideo(driveFileId) }
+        val updated = danceMaterialRepository.updateDriveInfo(materialId, null, null)
+            ?: throw NoSuchElementException("Material $materialId disappeared during video delete")
+        return updated.toResponse()
+    }
 
     suspend fun create(request: CreateMaterialRequest): DanceMaterialResponse {
         logger.info("Creating material {}", request)

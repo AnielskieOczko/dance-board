@@ -10,7 +10,10 @@ import com.danceboard.shared.dto.SortDirection
 import com.danceboard.shared.dto.SortField
 import com.danceboard.shared.dto.UpdateMaterialRequest
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.PartData
+import io.ktor.http.content.forEachPart
 import io.ktor.server.request.receive
+import io.ktor.server.request.receiveMultipart
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
@@ -18,6 +21,8 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
+import io.ktor.utils.io.toByteArray
+import java.io.InputStream
 import java.util.UUID
 
 
@@ -63,6 +68,39 @@ fun Route.danceMaterialRoutes(service: DanceMaterialService) {
             val id = UUID.fromString(call.parameters["id"])
             service.delete(id)
             call.respond(HttpStatusCode.NoContent)
+        }
+
+        post("/{id}/video") {
+            val id = UUID.fromString(call.parameters["id"])
+            val multipart = call.receiveMultipart()
+            var fileName: String? = null
+            var inputStream: InputStream? = null
+            var mimeType = "video/mp4"
+
+            multipart.forEachPart { part ->
+                if (part is PartData.FileItem) {
+                    fileName = part.originalFileName ?: "video.mp4"
+                    mimeType = part.contentType?.toString() ?: "video/mp4"
+                    val bytes = part.provider().toByteArray()
+                    inputStream = bytes.inputStream()
+                }
+                part.dispose()
+            }
+
+            // respond jest PO forEachPart — wszystkie części już odczytane
+            val stream = inputStream
+            if (stream == null) {
+                call.respond(HttpStatusCode.BadRequest, "No file uploaded")
+            } else {
+                val updated = service.uploadVideo(id, fileName ?: "video.mp4", stream, mimeType)
+                call.respond(HttpStatusCode.OK, updated)
+            }
+        }
+
+        delete("/{id}/video") {
+            val id = UUID.fromString(call.parameters["id"])
+            val updated = service.deleteVideo(id)
+            call.respond(HttpStatusCode.OK, updated)
         }
     }
 }

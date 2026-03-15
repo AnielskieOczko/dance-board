@@ -31,6 +31,18 @@ class DanceMaterialRepository {
 
     private suspend fun <T> dbQuery(block: suspend () -> T): T = newSuspendedTransaction { block() }
 
+    suspend fun updateDriveInfo(id: UUID, driveFileId: String?, driveViewUrl: String?): DanceMaterialEntity? = dbQuery {
+        DanceMaterials.update({ DanceMaterials.id eq id }) {
+            it[DanceMaterials.driveFileId] = driveFileId
+            it[DanceMaterials.driveViewUrl] = driveViewUrl
+            it[updatedAt] = Clock.System.now()
+        }
+        DanceMaterials.selectAll()
+            .where { DanceMaterials.id eq id }
+            .singleOrNull()
+            ?.toEntity()
+    }
+
     suspend fun create(request: CreateMaterialRequest): DanceMaterialEntity? = dbQuery {
         val id = DanceMaterials.insert {
             it[name] = request.name
