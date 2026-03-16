@@ -46,6 +46,7 @@ jobs:
           service: ${{ env.SERVICE }}
           region: ${{ env.REGION }}
           source: ./backend
+          flags: --use-http2
           env_vars: |
             FRONTEND_URL=https://danceboard-backend-352180004795.europe-central2.run.app
             GOOGLE_DRIVE_FOLDER_ID=${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}

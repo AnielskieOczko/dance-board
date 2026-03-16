@@ -72,7 +72,8 @@ fun Route.danceMaterialRoutes(service: DanceMaterialService) {
 
         post("/{id}/video") {
             val id = UUID.fromString(call.parameters["id"])
-            val multipart = call.receiveMultipart()
+            // Zwiększamy limit dla uploadu wideo do 500MB (Ktor 3 domyślnie ma 50MB)
+            val multipart = call.receiveMultipart(formFieldLimit = 500 * 1024 * 1024)
             var fileName: String? = null
             var inputStream: InputStream? = null
             var mimeType = "video/mp4"
