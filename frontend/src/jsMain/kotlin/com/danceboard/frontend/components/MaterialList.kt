@@ -18,6 +18,7 @@ fun MaterialList(
     isLoading: Boolean,
     onEdit: (DanceMaterialResponse) -> Unit,
     onDelete: (DanceMaterialResponse) -> Unit,
+    onShowDetails: (DanceMaterialResponse) -> Unit,
     onPageChange: (Int) -> Unit,
 ) {
     if (isLoading) {
@@ -41,7 +42,8 @@ fun MaterialList(
             MaterialCard(
                 material = material,
                 onEdit = { onEdit(material) },
-                onDelete = { onDelete(material) }
+                onDelete = { onDelete(material) },
+                onShowDetails = { onShowDetails(material) }
             )
         }
     }

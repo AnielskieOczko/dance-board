@@ -10,12 +10,13 @@ import com.danceboard.shared.dto.UpdateMaterialRequest
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.selected
 import org.jetbrains.compose.web.dom.*
+import org.w3c.files.File
 
 @Composable
 fun MaterialForm(
     existingMaterial: DanceMaterialResponse?,  // null = tryb dodawania
-    onSave: (CreateMaterialRequest) -> Unit,
-    onUpdate: (String, UpdateMaterialRequest) -> Unit,
+    onSave: (CreateMaterialRequest, File?) -> Unit,
+    onUpdate: (String, UpdateMaterialRequest, File?) -> Unit,
     onCancel: () -> Unit
 ) {
     val isEditing = existingMaterial != null
@@ -29,6 +30,7 @@ fun MaterialForm(
     var difficulty by remember { mutableStateOf(existingMaterial?.difficultyLevel ?: DifficultyLevel.BEGINNER) }
     var sourceUrl by remember { mutableStateOf(existingMaterial?.sourceUrl ?: "") }
     var author by remember { mutableStateOf(existingMaterial?.author ?: "") }
+    var videoFile by remember { mutableStateOf<org.w3c.files.File?>(null) }
 
     Div(attrs = { classes("form-container") }) {
         H2 { Text(if (isEditing) "Edytuj materiał" else "Dodaj materiał") }
@@ -108,6 +110,13 @@ fun MaterialForm(
             onInput { sourceUrl = it.value }
         }
 
+        Input(InputType.File, attrs = {
+            attr("accept", "video/mp4,video/x-m4v,video/*")
+            onChange { event ->
+                videoFile = event.target.files?.item(0)
+            }
+        })
+
         // Autor
         Label { Text("Autor *") }
         Input(type = InputType.Text) {
@@ -131,7 +140,7 @@ fun MaterialForm(
                             danceStyle = danceStyle,
                             difficultyLevel = difficulty,
                             sourceUrl = sourceUrl.ifBlank { null }
-                        ))
+                        ), videoFile)
                     } else {
                         onSave(CreateMaterialRequest(
                             name = name,
@@ -142,7 +151,7 @@ fun MaterialForm(
                             difficultyLevel = difficulty,
                             sourceUrl = sourceUrl.ifBlank { null },
                             author = author
-                        ))
+                        ), videoFile)
                     }
                 }
             }) { Text(if (isEditing) "Zapisz zmiany" else "Dodaj") }

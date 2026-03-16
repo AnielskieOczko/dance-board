@@ -15,7 +15,8 @@ import org.jetbrains.compose.web.dom.Text
 fun MaterialCard(
     material: DanceMaterialResponse,
     onEdit: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onShowDetails: () -> Unit
 ) {
     Div(attrs = { classes("card") }) {
         H3 { Text(material.name) }
@@ -47,8 +48,9 @@ fun MaterialCard(
         }
 
         Div(attrs = { classes("card-actions") }) {
+            Button(attrs = { onClick { onShowDetails() } }) { Text("Szczegóły / Wideo") }
             Button(attrs = { onClick { onEdit() } }) { Text("Edytuj") }
-            Button(attrs = { onClick { onDelete () } }) { Text("Usun") }
+            Button(attrs = { onClick { onDelete () } }) { Text("Usuń") }
         }
 
 

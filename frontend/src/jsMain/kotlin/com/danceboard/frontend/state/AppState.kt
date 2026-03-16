@@ -22,6 +22,13 @@ class AppState {
 
     var searchFilters by mutableStateOf(SearchFilters())
 
+    var selectedDanceMaterial: DanceMaterialResponse? by mutableStateOf(null)
+
+    suspend fun showDetails(material: DanceMaterialResponse) {
+        selectedDanceMaterial = material
+        currentView = View.DETAILS
+    }
+
     suspend fun loadMaterials() {
         isLoading = true
         error = null
@@ -31,7 +38,6 @@ class AppState {
             totalCount = response.totalCount
             currentPage = response.page
             totalPages = response.totalPages
-
         } catch (e: Exception) {
             error = e.message
         } finally {
@@ -39,11 +45,16 @@ class AppState {
         }
     }
 
-    suspend fun createMaterial(request: CreateMaterialRequest) {
+    suspend fun createMaterial(request: CreateMaterialRequest, videoFile: org.w3c.files.File?) {
         isLoading = true
         error = null
         try {
             val response = apiClient.createMaterial(request)
+
+            if (videoFile != null) {
+                apiClient.uploadVideo(materialId = response.id, file = videoFile)
+            }
+
             currentView = View.LIST
             loadMaterials()
         } catch (e: Exception) {
@@ -53,11 +64,19 @@ class AppState {
         }
     }
 
-    suspend fun updateMaterial(id: String, request: UpdateMaterialRequest) {
+    suspend fun updateMaterial(
+            id: String,
+            request: UpdateMaterialRequest,
+            videoFile: org.w3c.files.File?
+    ) {
         isLoading = true
         error = null
         try {
             val response = apiClient.updateMaterial(id, request)
+            if (videoFile != null) {
+                apiClient.uploadVideo(materialId = response.id, file = videoFile)
+            }
+
             currentView = View.LIST
             editingMaterial = null
             loadMaterials()
@@ -73,7 +92,6 @@ class AppState {
         error = null
         try {
             apiClient.deleteMaterial(id)
-
         } catch (e: Exception) {
             error = e.message
         } finally {
@@ -100,10 +118,10 @@ class AppState {
         searchFilters = filters
         loadMaterials()
     }
-
 }
 
-
 enum class View {
-    LIST, FORM
+    LIST,
+    FORM,
+    DETAILS
 }

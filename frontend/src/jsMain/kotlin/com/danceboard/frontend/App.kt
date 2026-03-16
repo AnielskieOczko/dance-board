@@ -25,6 +25,7 @@ fun App() {
         Header(attrs = { classes("header") }) {
             H1 { Text("🎭 DanceBoard") }
             Button(attrs = {
+                attr("type", "button")
                 onClick {
                     if (appState.currentView == View.LIST) {
                         appState.startCreating()
@@ -66,6 +67,9 @@ fun App() {
                     onDelete = { material ->
                         scope.launch { appState.deleteMaterial(material.id) }
                     },
+                    onShowDetails = { material ->
+                        scope.launch { appState.showDetails(material) }
+                    },
                     onPageChange = { page ->
                         scope.launch {
                             appState.updateFilters(appState.searchFilters.copy(page = page))
@@ -76,14 +80,29 @@ fun App() {
             View.FORM -> {
                 MaterialForm(
                     existingMaterial = appState.editingMaterial,
-                    onSave = { request ->
-                        scope.launch { appState.createMaterial(request) }
+                    onSave = { request, videoFile ->
+                        scope.launch { appState.createMaterial(
+                            request,
+                            videoFile = videoFile
+                        ) }
                     },
-                    onUpdate = { id, request ->
-                        scope.launch { appState.updateMaterial(id, request) }
+                    onUpdate = { id, request, videoFile ->
+                        scope.launch { appState.updateMaterial(
+                            id, request,
+                            videoFile = videoFile
+                        ) }
                     },
                     onCancel = { appState.goToList() }
                 )
+            }
+            View.DETAILS -> {
+                appState.selectedDanceMaterial?.let { material ->
+                    MaterialDetails(
+                        material = material,
+                        onBack = { appState.goToList() },
+                        onEdit = { appState.startEditing(material) }
+                    )
+                }
             }
         }
     }

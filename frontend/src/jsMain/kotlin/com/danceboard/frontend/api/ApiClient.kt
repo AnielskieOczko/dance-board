@@ -7,6 +7,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.coroutines.await
 
 class ApiClient {
     private val client = HttpClient {
@@ -53,6 +54,25 @@ class ApiClient {
 
     suspend fun getMaterial(id: String): DanceMaterialResponse {
         return client.get("$baseUrl/materials/$id").body()
+    }
+
+    suspend fun uploadVideo(materialId: String, file: org.w3c.files.File): DanceMaterialResponse {
+        val formData = org.w3c.xhr.FormData()
+        formData.append("video", file, file.name)
+        
+        val response = kotlinx.browser.window.fetch(
+            "$baseUrl/materials/$materialId/video",
+            js("({ method: 'POST', body: formData })").unsafeCast<org.w3c.fetch.RequestInit>()
+        ).await()
+
+        if (!response.ok) {
+            val errorText = response.text().await()
+            throw Exception("Failed to upload video: ${response.status} - $errorText")
+        }
+
+        val responseText = response.text().await()
+        val json = kotlinx.serialization.json.Json { ignoreUnknownKeys = true }
+        return json.decodeFromString(responseText)
     }
 
 

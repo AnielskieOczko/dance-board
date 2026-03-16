@@ -6,6 +6,7 @@ plugins {
 }
 
 group = "com.danceboard"
+
 version = "0.0.1"
 
 kotlin {
