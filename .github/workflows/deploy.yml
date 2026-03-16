@@ -51,5 +51,4 @@ jobs:
           region: ${{ env.REGION }}
           source: ./backend # Cloud Build użyje backend/Dockerfile i znajdzie zbudowany plik w build/libs/
           env_vars: |
-            FRONTEND_URL=https://${{ env.SERVICE }}-xxx.a.run.app # Zmień po uzyskaniu prawdziwego URLa
-            # Upewnij się czy potrzebujesz innych zmiennych db/neon
+            FRONTEND_URL=https://danceboard-backend-xxx.a.run.app
