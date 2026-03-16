@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: danceboard-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: danceboard
+      POSTGRES_USER: danceboard
+      POSTGRES_PASSWORD: danceboard
+    volumes:
+      - danceboard-data:/var/lib/postgresql/data
+volumes:
+  danceboard-data:

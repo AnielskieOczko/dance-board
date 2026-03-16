@@ -2,10 +2,11 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     kotlin("plugin.compose")
-    id("org.jetbrains.compose") version "1.7.3"
+    id("org.jetbrains.compose") version "1.10.1"
 }
 
 group = "com.danceboard"
+
 version = "0.0.1"
 
 kotlin {
@@ -13,6 +14,7 @@ kotlin {
         browser {
             commonWebpackConfig {
                 cssSupport { enabled.set(true) }
+                outputFileName = "DanceBoard-frontend.js"
             }
         }
         binaries.executable()
@@ -21,14 +23,14 @@ kotlin {
     sourceSets {
         jsMain {
             dependencies {
-                // Shared module (DTOs, enumy)
+                // Shared module (DTOs, enums)
                 implementation(project(":shared"))
 
                 // Compose HTML
-                implementation(compose.html.core)
-                implementation(compose.runtime)
+                implementation("org.jetbrains.compose.html:html-core:1.10.1")
+                implementation("org.jetbrains.compose.runtime:runtime:1.10.1")
 
-                // Ktor Client (HTTP requests do backendu)
+                // Ktor Client (HTTP requests to backend)
                 implementation("io.ktor:ktor-client-js:3.4.0")
                 implementation("io.ktor:ktor-client-content-negotiation:3.4.0")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:3.4.0")

@@ -5,9 +5,9 @@ ktor:
   deployment:
     port: 8080
 datasource:
-  jdbcUrl: ${?DB_URL}
-  username: ${?DB_USER}
-  password: ${?DB_PASSWORD}
+  jdbcUrl: "jdbc:postgresql://localhost:5432/danceboard"
+  username: "danceboard"
+  password: "danceboard"
   driverClassName: "org.postgresql.Driver"
   maxPoolSize: 5
 
