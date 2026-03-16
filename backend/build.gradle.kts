@@ -41,8 +41,8 @@ kotlin { jvmToolchain(21) }
 // ============================================================
 tasks.register<Copy>("copyFrontendResources") {
     dependsOn(":frontend:jsBrowserProductionWebpack")
-    // Include the JS bundle
-    from(project(":frontend").layout.buildDirectory.dir("dist/js/productionExecutable"))
+    // Include the JS bundle (Now pointing to the correct webpack output for Kotlin/JS 2.1+)
+    from(project(":frontend").layout.buildDirectory.dir("kotlin-webpack/js/productionExecutable"))
     // Include the HTML/CSS and other resources
     from(project(":frontend").layout.buildDirectory.dir("processedResources/js/main"))
     
