@@ -34,13 +34,18 @@ fun Application.module() {
     }
 
     install(CORS) {
-        val frontendUrl = (System.getenv("FRONTEND_URL") ?: "localhost:8081")
-            .removePrefix("https://")
-            .removePrefix("http://")
-        allowHost(frontendUrl, schemes = listOf("http", "https"))
+        // Pozwalamy na dowolny host w produkcji (w monolicie origin i tak jest ten sam, 
+        // ale Ktor CORS potrzebuje dopasowania jeśli Origin header jest obecny)
+        anyHost() 
+        
         allowHeader(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.Authorization)
+        
+        allowMethod(HttpMethod.Get)
+        allowMethod(HttpMethod.Post)
         allowMethod(HttpMethod.Put)
         allowMethod(HttpMethod.Delete)
+        allowMethod(HttpMethod.Options)
     }
 
     configureDatabases()
