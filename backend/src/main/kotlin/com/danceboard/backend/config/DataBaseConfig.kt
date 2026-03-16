@@ -15,7 +15,9 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Application.configureDatabases() {
     val hikariConfig = HikariConfig().apply {
-        jdbcUrl = environment.config.property("datasource.jdbcUrl").getString()
+        jdbcUrl = environment.config.property("datasource.jdbcUrl").getString().let { url ->
+            if (url.startsWith("postgresql://")) "jdbc:$url" else url
+        }
         username = environment.config.property("datasource.username").getString()
         password = environment.config.property("datasource.password").getString()
         driverClassName = environment.config.property("datasource.driverClassName").getString()
