@@ -22,12 +22,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Logowanie do Google Cloud (Workload Identity Federation - zalecane)
-      # Zobacz: https://github.com/google-github-actions/auth
       - name: Google Auth
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}' # Dodaj service account json do GitHub Secrets
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -35,20 +33,25 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      # Budujemy Fat-Jar z wbudowanym Frontend'em używając Gradle 
+
       - name: Build with Gradle
         run: |
           chmod +x gradlew
           ./gradlew :backend:buildFatJar
 
-      # Cloud Build i Deploy
-      # Deploy na Cloud Run używając wybudowanego pliku z gotowym monomitem (backend/Dockerfile musi go wskazywać)
       - name: Deploy to Cloud Run
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: ${{ env.SERVICE }}
           region: ${{ env.REGION }}
-          source: ./backend # Cloud Build użyje backend/Dockerfile i znajdzie zbudowany plik w build/libs/
+          source: ./backend
           env_vars: |
             FRONTEND_URL=https://danceboard-backend-xxx.a.run.app
+            GOOGLE_DRIVE_FOLDER_ID=${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_DRIVE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_DRIVE_CLIENT_SECRET }}
+            GOOGLE_REFRESH_TOKEN=${{ secrets.GOOGLE_DRIVE_REFRESH_TOKEN }}
+            DB_URL=${{ secrets.DB_URL }}
+            DB_USER=${{ secrets.DB_USER }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
