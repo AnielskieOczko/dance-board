@@ -8,6 +8,8 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
+import io.ktor.server.http.content.ignoreFiles
+import io.ktor.server.http.content.singlePageApplication
 import io.ktor.server.netty.EngineMain
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
@@ -55,5 +57,13 @@ fun Application.module() {
 
     routing {
         danceMaterialRoutes(danceMaterialService)
+
+        // Serwowanie plików po kompilacji z wewnątrz pliku *.JAR (/resources/static)
+        singlePageApplication {
+            useResources = true
+            filesPath = "static"
+            defaultPage = "index.html"
+            ignoreFiles { it.endsWith(".txt") }
+        }
     }
 }

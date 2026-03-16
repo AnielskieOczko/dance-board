@@ -37,6 +37,20 @@ application {
 kotlin { jvmToolchain(21) }
 
 // ============================================================
+// MONOLITH BUILD — Package frontend assets into backend
+// ============================================================
+tasks.register<Copy>("copyFrontendResources") {
+    dependsOn(":frontend:jsBrowserProductionWebpack")
+    from(project(":frontend").layout.buildDirectory.dir("dist/js/productionExecutable"))
+    into("src/main/resources/static")
+}
+
+tasks.named("processResources") {
+    dependsOn("copyFrontendResources")
+}
+
+
+// ============================================================
 // DEPENDENCIES — libraries (like <dependencies> in pom.xml)
 // ============================================================
 // Note: Ktor dependencies have NO versions — the io.ktor.plugin
