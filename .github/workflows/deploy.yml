@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feature/monolith-deployment
 
 env:
   PROJECT_ID: danceboard-app
@@ -53,4 +52,3 @@ jobs:
           source: ./backend # Cloud Build użyje backend/Dockerfile i znajdzie zbudowany plik w build/libs/
           env_vars: |
             FRONTEND_URL=https://danceboard-backend-xxx.a.run.app
-            # Tutaj możesz dodać zmienne NEON_DB_URL itp.
