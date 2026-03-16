@@ -6,9 +6,9 @@ on:
       - main
 
 env:
-  PROJECT_ID: your-google-cloud-project-id # ZMIEŃ TO
-  REGION: europe-central2 # ZMIEŃ TO
-  SERVICE: danceboard-backend # ZMIEŃ TO
+  PROJECT_ID: danceboard-app
+  REGION: europe-central2
+  SERVICE: danceboard-backend
 
 jobs:
   deploy:
