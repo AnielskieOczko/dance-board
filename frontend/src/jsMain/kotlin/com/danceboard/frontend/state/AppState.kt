@@ -14,6 +14,7 @@ class AppState {
     var currentPage by mutableStateOf(0)
     var totalPages by mutableStateOf(0)
     var isLoading by mutableStateOf(false)
+    var uploadProgress by mutableStateOf<Double?>(null)
     var error by mutableStateOf<String?>(null)
 
     var editingMaterial by mutableStateOf<DanceMaterialResponse?>(null)
@@ -52,7 +53,12 @@ class AppState {
             val response = apiClient.createMaterial(request)
 
             if (videoFile != null) {
-                apiClient.uploadVideo(materialId = response.id, file = videoFile)
+                uploadProgress = 0.0
+                val fileId = apiClient.uploadVideoDirect(videoFile) { progress ->
+                    uploadProgress = progress
+                }
+                apiClient.finalizeVideoUpload(materialId = response.id, fileId = fileId)
+                uploadProgress = null
             }
 
             currentView = View.LIST
@@ -72,9 +78,14 @@ class AppState {
         isLoading = true
         error = null
         try {
-            val response = apiClient.updateMaterial(id, request)
+            apiClient.updateMaterial(id, request)
             if (videoFile != null) {
-                apiClient.uploadVideo(materialId = response.id, file = videoFile)
+                uploadProgress = 0.0
+                val fileId = apiClient.uploadVideoDirect(videoFile) { progress ->
+                    uploadProgress = progress
+                }
+                apiClient.finalizeVideoUpload(materialId = id, fileId = fileId)
+                uploadProgress = null
             }
 
             currentView = View.LIST

@@ -15,6 +15,7 @@ import org.w3c.files.File
 @Composable
 fun MaterialForm(
     existingMaterial: DanceMaterialResponse?,  // null = tryb dodawania
+    uploadProgress: Double?,
     onSave: (CreateMaterialRequest, File?) -> Unit,
     onUpdate: (String, UpdateMaterialRequest, File?) -> Unit,
     onCancel: () -> Unit
@@ -123,6 +124,34 @@ fun MaterialForm(
             value(author)
             attr("placeholder", "Twoje imię")
             onInput { author = it.value }
+        }
+
+        // Progres uploadu
+        uploadProgress?.let { progress ->
+            Div(attrs = { classes("upload-progress-container") }) {
+                P { Text("Przesyłanie filmu: ${(progress * 100).toInt()}%") }
+                Div(attrs = {
+                    classes("upload-progress-bar-bg")
+                    style {
+                        property("width", "100%")
+                        property("height", "10px")
+                        property("background-color", "#eee")
+                        property("border-radius", "5px")
+                        property("margin-bottom", "10px")
+                    }
+                }) {
+                    Div(attrs = {
+                        classes("upload-progress-bar-fill")
+                        style {
+                            property("width", "${(progress * 100).toInt()}%")
+                            property("height", "100%")
+                            property("background-color", "#4CAF50")
+                            property("border-radius", "5px")
+                            property("transition", "width 0.2s ease-in-out")
+                        }
+                    })
+                }
+            }
         }
 
         // Przyciski

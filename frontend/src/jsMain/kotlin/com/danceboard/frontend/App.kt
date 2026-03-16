@@ -80,6 +80,7 @@ fun App() {
             View.FORM -> {
                 MaterialForm(
                     existingMaterial = appState.editingMaterial,
+                    uploadProgress = appState.uploadProgress,
                     onSave = { request, videoFile ->
                         scope.launch { appState.createMaterial(
                             request,
