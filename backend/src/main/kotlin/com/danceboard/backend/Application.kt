@@ -53,7 +53,19 @@ fun Application.module() {
         googleDriveService = googleDriveService
     )
 
+import io.ktor.server.http.content.singlePageApplication
+
+// ... existing code ...
+
     routing {
         danceMaterialRoutes(danceMaterialService)
+
+        // Serwowanie plików po kompilacji z wewnątrz pliku *.JAR (/resources/static)
+        singlePageApplication {
+            useResources = true
+            filesPath = "static"
+            defaultPage = "index.html"
+            ignoreFiles { it.endsWith(".txt") }
+        }
     }
 }
