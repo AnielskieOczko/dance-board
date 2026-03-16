@@ -41,8 +41,12 @@ kotlin { jvmToolchain(21) }
 // ============================================================
 tasks.register<Copy>("copyFrontendResources") {
     dependsOn(":frontend:jsBrowserProductionWebpack")
+    // Include the JS bundle
     from(project(":frontend").layout.buildDirectory.dir("dist/js/productionExecutable"))
-    into("src/main/resources/static")
+    // Include the HTML/CSS and other resources
+    from(project(":frontend").layout.buildDirectory.dir("processedResources/js/main"))
+    
+    into(layout.buildDirectory.dir("resources/main/static"))
 }
 
 tasks.named("processResources") {
