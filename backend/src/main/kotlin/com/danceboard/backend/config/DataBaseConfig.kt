@@ -13,10 +13,20 @@ import org.jetbrains.exposed.sql.kotlin.datetime.CurrentTimestamp
 import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
 import org.jetbrains.exposed.sql.transactions.transaction
 
+import java.net.URI
+
 fun Application.configureDatabases() {
     val hikariConfig = HikariConfig().apply {
-        jdbcUrl = environment.config.property("datasource.jdbcUrl").getString().let { url ->
-            if (url.startsWith("postgresql://")) "jdbc:$url" else url
+        val rawUrl = environment.config.property("datasource.jdbcUrl").getString()
+        jdbcUrl = if (rawUrl.startsWith("postgresql://") || rawUrl.startsWith("postgres://")) {
+            val uri = URI(rawUrl.replaceFirst("postgres", "http")) // Use http as a placeholder scheme for parsing
+            val host = uri.host
+            val port = if (uri.port != -1) ":${uri.port}" else ""
+            val path = uri.path
+            val query = if (uri.query != null) "?${uri.query}" else ""
+            "jdbc:postgresql://$host$port$path$query"
+        } else {
+            rawUrl
         }
         username = environment.config.property("datasource.username").getString()
         password = environment.config.property("datasource.password").getString()
