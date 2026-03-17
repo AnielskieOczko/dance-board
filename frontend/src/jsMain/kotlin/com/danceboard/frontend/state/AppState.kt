@@ -5,7 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.danceboard.frontend.api.ApiClient
 import com.danceboard.shared.dto.*
+import kotlinx.browser.window
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
+@OptIn(DelicateCoroutinesApi::class)
 class AppState {
     private val apiClient = ApiClient()
 
@@ -24,10 +29,83 @@ class AppState {
     var searchFilters by mutableStateOf(SearchFilters())
 
     var selectedDanceMaterial: DanceMaterialResponse? by mutableStateOf(null)
+    
+    init {
+        window.addEventListener("popstate", {
+            kotlinx.coroutines.GlobalScope.launch {
+                syncUrlToState()
+            }
+        })
+    }
+
+    fun navigateTo(view: View, material: DanceMaterialResponse? = null, pushState: Boolean = true) {
+        currentView = view
+        editingMaterial = null
+        selectedDanceMaterial = null
+        
+        if (view == View.FORM) {
+            editingMaterial = material
+        } else if (view == View.DETAILS) {
+            selectedDanceMaterial = material
+        }
+
+        if (pushState) {
+            updateUrl(view, material?.id)
+        }
+    }
+
+    private fun updateUrl(view: View, materialId: String? = null) {
+        val path = when (view) {
+            View.LIST -> "/"
+            View.FORM -> if (materialId != null) "/edit/$materialId" else "/create"
+            View.DETAILS -> "/details/$materialId"
+        }
+        window.history.pushState(null, "", path)
+    }
+
+    suspend fun syncUrlToState() {
+        val path = window.location.pathname
+        val parts = path.split("/").filter { it.isNotEmpty() }
+
+        try {
+            when {
+                parts.isEmpty() -> {
+                    currentView = View.LIST
+                    loadMaterials()
+                }
+                parts[0] == "create" -> {
+                    editingMaterial = null
+                    currentView = View.FORM
+                }
+                parts[0] == "edit" && parts.size > 1 -> {
+                    val id = parts[1]
+                    isLoading = true
+                    editingMaterial = apiClient.getMaterial(id)
+                    currentView = View.FORM
+                }
+                parts[0] == "details" && parts.size > 1 -> {
+                    val id = parts[1]
+                    isLoading = true
+                    selectedDanceMaterial = apiClient.getMaterial(id)
+                    currentView = View.DETAILS
+                }
+                else -> {
+                    // Fallback to list for unknown paths
+                    currentView = View.LIST
+                    loadMaterials()
+                }
+            }
+        } catch (e: Exception) {
+            error = "Could not load page: ${e.message}"
+            currentView = View.LIST
+            loadMaterials()
+        } finally {
+            isLoading = false
+        }
+    }
 
     suspend fun showDetails(material: DanceMaterialResponse) {
-        selectedDanceMaterial = material
-        currentView = View.DETAILS
+        navigateTo(View.DETAILS, material)
     }
 
     suspend fun loadMaterials() {

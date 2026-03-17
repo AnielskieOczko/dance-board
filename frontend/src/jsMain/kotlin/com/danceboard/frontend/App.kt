@@ -13,9 +13,9 @@ fun App() {
     val appState = remember { AppState() }
     val scope = rememberCoroutineScope()
 
-    // Załaduj materiały przy starcie (jak useEffect([], ...) w React)
+    // Załaduj materiały i zsynchronizuj URL przy starcie
     LaunchedEffect(Unit) {
-        appState.loadMaterials()
+        appState.syncUrlToState()
     }
 
     Div(attrs = { classes("app") }) {
@@ -28,9 +28,9 @@ fun App() {
                 attr("type", "button")
                 onClick {
                     if (appState.currentView == View.LIST) {
-                        appState.startCreating()
+                        appState.navigateTo(View.FORM)
                     } else {
-                        appState.goToList()
+                        appState.navigateTo(View.LIST)
                     }
                 }
             }) {
@@ -63,12 +63,12 @@ fun App() {
                     currentPage = appState.currentPage,
                     totalPages = appState.totalPages,
                     isLoading = appState.isLoading,
-                    onEdit = { material -> appState.startEditing(material) },
+                    onEdit = { material -> appState.navigateTo(View.FORM, material) },
                     onDelete = { material ->
                         scope.launch { appState.deleteMaterial(material.id) }
                     },
                     onShowDetails = { material ->
-                        scope.launch { appState.showDetails(material) }
+                        appState.navigateTo(View.DETAILS, material)
                     },
                     onPageChange = { page ->
                         scope.launch {
@@ -93,15 +93,15 @@ fun App() {
                             videoFile = videoFile
                         ) }
                     },
-                    onCancel = { appState.goToList() }
+                    onCancel = { appState.navigateTo(View.LIST) }
                 )
             }
             View.DETAILS -> {
                 appState.selectedDanceMaterial?.let { material ->
                     MaterialDetails(
                         material = material,
-                        onBack = { appState.goToList() },
-                        onEdit = { appState.startEditing(material) }
+                        onBack = { appState.navigateTo(View.LIST) },
+                        onEdit = { appState.navigateTo(View.FORM, material) }
                     )
                 }
             }

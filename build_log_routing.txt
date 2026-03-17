@@ -1,0 +1,92 @@
+> Task :frontend:generateProjectStructureMetadata UP-TO-DATE
+> Task :frontend:allMetadataJar UP-TO-DATE
+> Task :frontend:kmpPartiallyResolvedDependenciesChecker
+> Task :frontend:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :frontend:convertXmlValueResourcesForCommonMain NO-SOURCE
+> Task :frontend:copyNonXmlValueResourcesForCommonMain NO-SOURCE
+> Task :frontend:prepareComposeResourcesTaskForCommonMain NO-SOURCE
+> Task :frontend:generateResourceAccessorsForCommonMain SKIPPED
+> Task :frontend:convertXmlValueResourcesForJsMain NO-SOURCE
+> Task :frontend:copyNonXmlValueResourcesForJsMain NO-SOURCE
+> Task :frontend:prepareComposeResourcesTaskForJsMain NO-SOURCE
+> Task :frontend:generateResourceAccessorsForJsMain SKIPPED
+> Task :frontend:convertXmlValueResourcesForWebMain NO-SOURCE
+> Task :frontend:copyNonXmlValueResourcesForWebMain NO-SOURCE
+> Task :frontend:prepareComposeResourcesTaskForWebMain NO-SOURCE
+> Task :frontend:generateResourceAccessorsForWebMain SKIPPED
+> Task :frontend:generateActualResourceCollectorsForJsMain SKIPPED
+> Task :frontend:generateComposeResClass SKIPPED
+> Task :frontend:generateExpectResourceCollectorsForCommonMain SKIPPED
+> Task :shared:kmpPartiallyResolvedDependenciesChecker
+> Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :shared:compileKotlinJs UP-TO-DATE
+> Task :frontend:jsResolveResourcesFromDependencies UP-TO-DATE
+> Task :frontend:assembleJsMainResources UP-TO-DATE
+> Task :frontend:jsResolveSelfResourcesCopyHierarchicalMultiplatformResources UP-TO-DATE
+> Task :frontend:jsAggregateResources UP-TO-DATE
+> Task :frontend:unpackSkikoWasmRuntime SKIPPED
+> Task :frontend:jsProcessResources UP-TO-DATE
+> Task :kotlinKotlinNpmCachesSetup
+> Task :kotlinNodeJsSetup UP-TO-DATE
+> Task :kotlinRestoreYarnLock UP-TO-DATE
+> Task :kotlinYarnSetup UP-TO-DATE
+> Task :shared:jsPackageJson UP-TO-DATE
+> Task :frontend:jsPackageJson UP-TO-DATE
+> Task :frontend:jsTestPackageJson UP-TO-DATE
+> Task :shared:jsTestPackageJson UP-TO-DATE
+> Task :frontend:jsPublicPackageJson UP-TO-DATE
+> Task :frontend:jsTestPublicPackageJson UP-TO-DATE
+> Task :shared:jsPublicPackageJson UP-TO-DATE
+> Task :shared:jsTestPublicPackageJson UP-TO-DATE
+> Task :kotlinPackageJsonUmbrella UP-TO-DATE
+> Task :rootPackageJson UP-TO-DATE
+> Task :kotlinNpmInstall UP-TO-DATE
+> Task :kotlinStoreYarnLock UP-TO-DATE
+> Task :frontend:compileKotlinJs
+> Task :frontend:jsMainClasses
+> Task :frontend:jsJar
+> Task :frontend:compileProductionExecutableKotlinJs
+> Task :frontend:jsProductionExecutableCompileSync
+
+> Task :frontend:jsBrowserProductionWebpack
+asset DanceBoard-frontend.js 1.11 MiB [emitted] [minimized] [big] (name: main) 1 related asset
+asset 731.js 267 bytes [compared for emit] [minimized] 1 related asset
+runtime modules 7.98 KiB 10 modules
+modules with warnings 3.87 MiB [true warnings]
+  ./kotlin/DanceBoard-frontend.js 294 KiB [built] [code generated] [11 warnings]
+  ./kotlin/androidx-compose-runtime-runtime.js 926 KiB [built] [code generated] [114 warnings]
+  ./kotlin/kotlin-kotlin-stdlib.js 572 KiB [built] [code generated] [168 warnings]
+  ./kotlin/kotlinx-coroutines-core.js 352 KiB [built] [code generated] [90 warnings]
+  ./kotlin/html-html-core.js 127 KiB [built] [code generated] [31 warnings]
+  ./kotlin/html-internal-html-core-runtime.js 15 KiB [built] [code generated] [8 warnings]
+  ./kotlin/ktor-ktor-client-core.js 339 KiB [built] [code generated] [88 warnings]
+  ./kotlin/ktor-ktor-utils.js 93.6 KiB [built] [code generated] [56 warnings]
+  ./kotlin/ktor-ktor-http.js 126 KiB [built] [code generated] [36 warnings]
+  ./kotlin/ktor-ktor-client-content-negotiation.js 32.1 KiB [built] [code generated] [8 warnings]
+  + 13 modules
+./kotlin/DanceBoard-shared.js 86.2 KiB [built] [code generated]
+../../node_modules/ws/browser.js 176 bytes [built] [code generated]
+webpack 5.101.3 compiled with 2 warnings in 8693 ms
+asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
+This can impact web performance.
+Assets: 
+  DanceBoard-frontend.js (1.11 MiB)
+entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
+Entrypoints:
+  main (1.11 MiB)
+      DanceBoard-frontend.js
+
+> Task :frontend:jsBrowserDistribution
+> Task :frontend:assemble
+
+[Incubating] Problems report is available at: file:///Users/rafal/Projects/DanceBoard/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.3.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 21s
+31 actionable tasks: 9 executed, 22 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.3.0/userguide/configuration_cache_enabling.html
