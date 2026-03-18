@@ -39,6 +39,12 @@ jobs:
           chmod +x gradlew
           ./gradlew :backend:buildFatJar
 
+      - name: SonarScan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew sonar --info
+
       - name: Deploy to Cloud Run
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v2
