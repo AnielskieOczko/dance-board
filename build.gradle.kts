@@ -5,7 +5,7 @@ plugins {
     kotlin("plugin.compose") version "2.3.10" apply false
     id("io.ktor.plugin") version "3.4.0" apply false
     id("org.jetbrains.compose") version "1.10.1" apply false
-    id("org.sonarqube") version "5.1.0.4882"
+    id("org.sonarqube") version "7.0.1.6134"
 }
 
 sonar {
